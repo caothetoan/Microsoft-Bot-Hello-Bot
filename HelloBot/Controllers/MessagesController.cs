@@ -2,8 +2,11 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
+using HelloBot.Dialogs;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
+using HelloBot.Models;
+using Microsoft.Bot.Builder.FormFlow;
 
 namespace HelloBot
 {
@@ -18,7 +21,8 @@ namespace HelloBot
         {
             if (activity.Type == ActivityTypes.Message)
             {
-                await Conversation.SendAsync(activity, () => new Dialogs.RootDialog());
+                await Conversation.SendAsync(activity, BuildDialog);
+                //() => new Dialogs.RootDialog()
             }
             else
             {
@@ -49,12 +53,26 @@ namespace HelloBot
             else if (message.Type == ActivityTypes.Typing)
             {
                 // Handle knowing tha the user is typing
+                
             }
             else if (message.Type == ActivityTypes.Ping)
             {
+
             }
 
             return null;
+        }
+
+        private static IDialog<BoyFriendSelection> BuildDialog()
+        {
+            return Chain.From(() => FormDialog.FromForm(BuildForm));
+        }
+
+        private static IForm<BoyFriendSelection> BuildForm()
+        {
+            return new FormBuilder<BoyFriendSelection>()
+                .Message("Hello! I'm Jarvis, an AI assistant built by Mr. Cao The Toan. I'm here to help you.")
+                .Build();
         }
     }
 }
